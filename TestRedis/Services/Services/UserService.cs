@@ -4,6 +4,7 @@ using TestRedis.ClientResponse;
 using TestRedis.Services;
 using Autofac.Core;
 using Newtonsoft.Json;
+using TestRedis.Constants;
 
 namespace TestRedis.Services
 {
@@ -20,7 +21,7 @@ namespace TestRedis.Services
             if (IsUserExist(user.Email))
             {
                 Response.Status = false;
-                Response.Message = "User is already exist";
+                Response.Message = MessageConstant.UserAlreadyExist;
             }
             else
             {
@@ -32,7 +33,7 @@ namespace TestRedis.Services
                     user.UpdatedDate = DateTime.Now;
                     _db.Users.Add(user);
                     _db.SaveChanges();
-                    Response.Message = "User saved successfully!";
+                    Response.Message = MessageConstant.UserSavedSuccessfully;
                 }
                 catch (Exception ex)
                 {
@@ -51,8 +52,7 @@ namespace TestRedis.Services
                 User existinguser = _db.Users.FirstOrDefault(x => x.Email == user.Email);
                 if (existinguser != null)
                 {
-                    Response.Message = (existinguser.IsActive == true) ? "user Updated Successfully"
-                                       : "User were deleted previously, by updating you are gonna active previous user with updated information.";
+                    Response.Message = (existinguser.IsActive == true) ? MessageConstant.UserUpdatedSuccessfully: MessageConstant.InactiveUserUpdate;
                     existinguser = mapOldUserToNewUser(user, existinguser);
                     _db.Users.Update(existinguser);
                     _db.SaveChanges();
@@ -61,14 +61,14 @@ namespace TestRedis.Services
                 else
                 {
                     Response.Status = false;
-                    Response.Message = "User not found";
+                    Response.Message = MessageConstant.UserNotFound;
                 }
             }
             else
             {
                 Response = AddUser(user);
                 if(Response.Status == true)
-                Response.Message = "User not found, instead of update  we added that user now.";
+                Response.Message = MessageConstant.InsteadOfUpdateAddtheUser;
             }
             return Response;
         }
@@ -99,18 +99,18 @@ namespace TestRedis.Services
                     _db.SaveChanges();
 
                     Response.Status = true;
-                    Response.Message = "User Deleted Successfully.";
+                    Response.Message = MessageConstant.UserDeletedSuccessfully;
                 }
                 else
                 {
                     Response.Status = false;
-                    Response.Message = "User Already Deleted.";
+                    Response.Message = MessageConstant.UserAlreadyDeleted;
                 }
             }
             else
             {
                 Response.Status = false;
-                Response.Message = "User does not exist.";
+                Response.Message = MessageConstant.UserNotFound;
             }
 
             return Response;
