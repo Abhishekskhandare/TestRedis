@@ -86,7 +86,40 @@ namespace TestRedis.Services
             user = _db.Users.FirstOrDefault(x => x.Email == email);
             return user;
         }
+
+        public Response DeleteUserByEmailId(string email)
+        {
+            Response Response = new Response();
+            if (IsUserExist(email))
+            {
+                if(IsUserActive(email))
+                {
+                    User user = _db.Users.FirstOrDefault(x => x.Email == email);
+                    user.IsActive = false;
+                    _db.SaveChanges();
+
+                    Response.Status = true;
+                    Response.Message = "User Deleted Successfully.";
+                }
+                else
+                {
+                    Response.Status = false;
+                    Response.Message = "User Already Deleted.";
+                }
+            }
+            else
+            {
+                Response.Status = false;
+                Response.Message = "User does not exist.";
+            }
+
+            return Response;
+        }
         #region private Methods
+        private bool IsUserActive(string email)
+        {
+            return _db.Users.Any(x => x.Email == email && x.IsActive == true);
+        }
         private bool IsUserExist(string email)
         {
             return _db.Users.Any(x => x.Email == email);

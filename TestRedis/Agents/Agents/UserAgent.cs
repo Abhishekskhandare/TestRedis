@@ -51,6 +51,10 @@ namespace TestRedis.Agents
             return _userCache.GetUserByEmailId(email);
         }
 
+        public Response DeleteUserByEmailId(string email)
+        {
+            return _userCache.DeleteUserByEmailId(email);
+        }
 
 
         #region private methods

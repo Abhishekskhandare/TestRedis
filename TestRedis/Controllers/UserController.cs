@@ -90,6 +90,23 @@ namespace TestRedis.Controllers
             return Ok(Response);
         }
 
+        [HttpPost]
+        [Route("DeleteUser")]
+        public IActionResult DeleteUserByEmailId(string email)
+        {
+            Response Response = new Response();
+            try
+            {
+                Response = _userAgent.DeleteUserByEmailId(email);
+                Response.Status = true;
+            }
+            catch (Exception)
+            {
+                Response.Status = false;
+                Response.Message = "failure.";
+            }
+            return Ok(Response);
+        }
 
     }
 }

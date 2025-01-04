@@ -9,6 +9,8 @@ namespace TestRedis.Caches
         public string GetAllUsers();
         public string GetUserByEmailId(string email);
         public Response UpdateUser(User user);
+        public Response DeleteUserByEmailId(string email);
+
 
     }
 }

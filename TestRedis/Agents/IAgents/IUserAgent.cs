@@ -9,5 +9,6 @@ public interface IUserAgent
     public string GetAllUsers();
     public string GetUserByEmailId(string email);
     public Response UpdateUser(UserResponse userResponce);
+    public Response DeleteUserByEmailId(string email);
 
 }

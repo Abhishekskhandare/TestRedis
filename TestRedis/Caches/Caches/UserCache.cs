@@ -72,5 +72,10 @@ namespace TestRedis.Caches
             string json = JsonConvert.SerializeObject(user, Formatting.Indented);
             return json;
         }
+
+        public Response DeleteUserByEmailId(string email)
+        {
+            return _service.DeleteUserByEmailId(email);
+        }
     }
 }

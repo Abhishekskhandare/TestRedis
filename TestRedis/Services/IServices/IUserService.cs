@@ -9,6 +9,8 @@ namespace TestRedis.Services
         public List<User> GetAllUsers(string key);
         public User GetUserByEmailId(string email);
         public Response UpdateUser(User user);
+        public Response DeleteUserByEmailId(string email);
+
 
 
     }
