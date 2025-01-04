@@ -75,7 +75,14 @@ namespace TestRedis.Caches
 
         public Response DeleteUserByEmailId(string email)
         {
-            return _service.DeleteUserByEmailId(email);
+            string key = "allUsers";
+            Response response = new Response();
+            response = _service.DeleteUserByEmailId(email);
+            if (response.Status == true && response.Message != string.Empty)
+            {
+                _cache.Remove(key);
+            }
+            return response;
         }
     }
 }
