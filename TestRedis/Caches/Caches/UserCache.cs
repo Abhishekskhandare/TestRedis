@@ -54,6 +54,18 @@ namespace TestRedis.Caches
             return response;
         }
 
+        public Response UpdateUser(User user)
+        {
+            string key = "allUsers";
+            Response response = new Response();
+            response = _service.UpdateUser(user);
+            if (response.Status == true && response.Message != string.Empty)
+            {
+                _cache.Remove(key);
+            }
+            return response;
+        }
+
         public string GetUserByEmailId(string email)
         {
             User user = _service.GetUserByEmailId(email);

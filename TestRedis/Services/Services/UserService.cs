@@ -43,6 +43,36 @@ namespace TestRedis.Services
             return Response;
         }
 
+        public Response UpdateUser(User user)
+        {
+            Response Response = new Response();
+            if (IsUserExist(user.Email))
+            {
+                User existinguser = _db.Users.FirstOrDefault(x => x.Email == user.Email);
+                if (existinguser != null)
+                {
+                    Response.Message = (existinguser.IsActive == true) ? "user Updated Successfully"
+                                       : "User were deleted previously, by updating you are gonna active previous user with updated information.";
+                    existinguser = mapOldUserToNewUser(user, existinguser);
+                    _db.Users.Update(existinguser);
+                    _db.SaveChanges();
+                    Response.Status = true;
+                }
+                else
+                {
+                    Response.Status = false;
+                    Response.Message = "User not found";
+                }
+            }
+            else
+            {
+                Response = AddUser(user);
+                if(Response.Status == true)
+                Response.Message = "User not found, instead of update  we added that user now.";
+            }
+            return Response;
+        }
+    
         public List<User> GetAllUsers(string key)
         {
             List<User> users = new List<User>();
@@ -61,6 +91,18 @@ namespace TestRedis.Services
         {
             return _db.Users.Any(x => x.Email == email);
         }
+        private User mapOldUserToNewUser(User user, User existinguser)
+        {
+            existinguser.UpdatedDate = DateTime.Now;
+            existinguser.DateOfBirth = user.DateOfBirth;
+            existinguser.FirstName = user.FirstName;
+            existinguser.LastName = user.LastName;
+            existinguser.Gender = user.Gender;
+            existinguser.PhoneNumber = user.PhoneNumber;
+            existinguser.IsActive = true;
+            return existinguser;
+        }
+
         #endregion
     }
 }

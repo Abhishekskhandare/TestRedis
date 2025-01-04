@@ -8,4 +8,6 @@ public interface IUserAgent
     public Response AddUser(UserResponse user);
     public string GetAllUsers();
     public string GetUserByEmailId(string email);
+    public Response UpdateUser(UserResponse userResponce);
+
 }

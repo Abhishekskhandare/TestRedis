@@ -27,7 +27,18 @@ namespace TestRedis.Agents
                 return _userCache.AddUser(user);
         }
 
-    
+        public Response UpdateUser(UserResponse userResponce)
+        {
+            User user = UserResponseToModel(userResponce);
+            Response responce = new Response();
+            responce = CheckValidDataForUser(user);
+            if (responce.Status == true && !string.IsNullOrEmpty(responce.Message))
+                return responce;
+            else
+                return _userCache.UpdateUser(user);
+        }
+
+
 
         public string GetAllUsers()
         {

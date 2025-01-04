@@ -72,6 +72,24 @@ namespace TestRedis.Controllers
             return Ok(Response);
         }
 
+        [HttpPost]
+        [Route("UpdateUser")]
+        public IActionResult UpdateUser(UserResponse user)
+        {
+            Response Response = new Response();
+            try
+            {
+                Response = _userAgent.UpdateUser(user);
+                Response.Status = true;
+            }
+            catch (Exception)
+            {
+                Response.Status = false;
+                Response.Message = "failure.";
+            }
+            return Ok(Response);
+        }
+
 
     }
 }
