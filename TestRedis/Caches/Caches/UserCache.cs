@@ -3,6 +3,11 @@ using StackExchange.Redis;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using TestRedis.Services;
 using Microsoft.Extensions.Caching.Distributed;
+using TestRedis.EFModel;
+using Newtonsoft.Json;
+using TestRedis.ClientResponse;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace TestRedis.Caches
 {
@@ -16,37 +21,44 @@ namespace TestRedis.Caches
             _service = service;
             _cache = cache;
         }
-        
+
         public string GetAllUsers()
         {
             string key = "allUsers";
-            string? allUsers = _cache.GetString(key);
-            if (string.IsNullOrEmpty(allUsers))
+            string json = _cache.GetString(key)??string.Empty;
+            if (string.IsNullOrEmpty(json))
             {
-                allUsers = _service.GetAllUsers(key);
-                if (!string.IsNullOrEmpty(allUsers))
+                List<User> users = new List<User>();
+                users = _service.GetAllUsers(key);
+                if (!(users is null || users.Count == 0))
                 {
-                    _cache.SetString(key, allUsers);
+                    json = JsonConvert.SerializeObject(users, Formatting.Indented);
+                }
+                if (!string.IsNullOrEmpty(json))
+                {
+                    _cache.SetString(key, json);
                 }
             }
-            return allUsers;
+            return json;
         }
 
-        //public string AddUser(string user)
-        //{
-        //    string key = "allUsers";
-        //    string? allUsers = GetAllUsers();
-        //    allUsers += allUsers+ user;
-        //    if (string.IsNullOrEmpty(allUsers))
-        //    {
-        //        allUsers = _service.GetAllUsers(key);
-        //        if (!string.IsNullOrEmpty(allUsers))
-        //        {
-        //            _cache.SetString(key, allUsers);
-        //        }
-        //    }
-        //    return allUsers;
-        //}
+        public Response AddUser(User user)
+        {
+            string key = "allUsers";
+            Response response = new Response();
+            response = _service.AddUser(user);
+            if(response.Status == true && response.Message != string.Empty)
+            {
+                _cache.Remove(key);
+            }
+            return response;
+        }
 
+        public string GetUserByEmailId(string email)
+        {
+            User user = _service.GetUserByEmailId(email);
+            string json = JsonConvert.SerializeObject(user, Formatting.Indented);
+            return json;
+        }
     }
 }

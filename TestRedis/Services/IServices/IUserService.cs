@@ -1,7 +1,13 @@
-﻿namespace TestRedis.Services
+﻿using TestRedis.EFModel;
+using TestRedis.ClientResponse;
+
+namespace TestRedis.Services
 {
     public interface IUserService
     {
-        public string GetAllUsers(string key);
+        public Response AddUser(User user);
+        public List<User> GetAllUsers(string key);
+        public User GetUserByEmailId(string email);
+
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TestRedis.Agents;
+using TestRedis.ClientResponse;
+using TestRedis.EFModel;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TestRedis.Controllers
@@ -15,15 +17,61 @@ namespace TestRedis.Controllers
         }
 
         [HttpGet]
+        [Route("GetAllUsers")]
         public IActionResult GetAllUsers()
         {
-            var httpResponse = new
+            Response Response = new Response();
+            try
             {
-                Status = true, // or false for an error
-                Message = "Data get successfully.",
-                Data = _userAgent.GetAllUsers()
-            };
-            return Ok(httpResponse);
+                Response.Data = _userAgent.GetAllUsers();
+                Response.Status = true;
+                Response.Message = "Data get successfully.";
+            }
+            catch (Exception)
+            {
+                Response.Status = false;
+                Response.Message = "failure.";
+            }
+            return Ok(Response);
         }
+
+        [HttpGet]
+        [Route("GetUserByEmailId")]
+        public IActionResult GetUserByEmailId(string email)
+        {
+            Response Response = new Response();
+            try
+            {
+                Response.Data = _userAgent.GetUserByEmailId(email);
+                Response.Status = true;
+                Response.Message = "Data get successfully.";
+            }
+            catch (Exception)
+            {
+                Response.Status = false;
+                Response.Message = "failure.";
+            }
+            return Ok(Response);
+        }
+
+        [HttpPost]
+        [Route("AddUser")]
+        public IActionResult AddUser(UserResponse user)
+        {
+            Response Response = new Response();
+            try
+            {
+                Response = _userAgent.AddUser(user);
+                Response.Status = true;
+            }
+            catch (Exception)
+            {
+                Response.Status = false;
+                Response.Message = "failure.";
+            }
+            return Ok(Response);
+        }
+
+
     }
 }
