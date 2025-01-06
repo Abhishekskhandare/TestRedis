@@ -76,7 +76,7 @@ namespace TestRedis.Services
         public List<User> GetAllUsers(string key)
         {
             List<User> users = new List<User>();
-            users = _db.Users.ToList();
+            users = _db.Users.Where(x=>x.IsActive == true).ToList();
             return users;
         }
 

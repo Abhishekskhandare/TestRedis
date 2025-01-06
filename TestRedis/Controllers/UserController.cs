@@ -27,10 +27,10 @@ namespace TestRedis.Controllers
                 Response.Status = true;
                 Response.Message = "Data get successfully.";
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Response.Status = false;
-                Response.Message = "failure.";
+                Response.Message = ex.Message;
             }
             return Ok(Response);
         }
